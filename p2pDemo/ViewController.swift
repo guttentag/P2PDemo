@@ -32,7 +32,7 @@ class ViewController: UIViewController {
         mcSession.disconnect()
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         NSLog("will dissapear")
     }
@@ -43,9 +43,9 @@ class ViewController: UIViewController {
     }
     
     func setUpConnection(){
-        self.mcPeerId = MCPeerID(displayName: UIDevice.currentDevice().name)
+        self.mcPeerId = MCPeerID(displayName: UIDevice.current.name)
         
-        mcSession = MCSession(peer: mcPeerId, securityIdentity: nil, encryptionPreference: MCEncryptionPreference.None)
+        mcSession = MCSession(peer: mcPeerId, securityIdentity: nil, encryptionPreference: MCEncryptionPreference.none)
         mcSession.delegate = self
         
         mcBrowser = MCBrowserViewController(serviceType: "chatDemoApp", session: mcSession)
@@ -55,47 +55,51 @@ class ViewController: UIViewController {
     }
     @IBAction func searchForPeers(sender: AnyObject) {
         mcAdvertiser.start()
-        presentViewController(mcBrowser, animated: true, completion: nil)
+        present(mcBrowser, animated: true, completion: nil)
     }
     
     @IBAction func showPeers(sender: AnyObject) {
-        NSLog("\(mcSession.connectedPeers.count)")
+        print("\(mcSession.connectedPeers.count)")
         for item in mcSession.connectedPeers{
-            NSLog("\(item.displayName)")
+            print("\(item.displayName)")
         }
     }
     @IBAction func sendData(sender: AnyObject) {
-        NSLog("sending \(textField.text)")
+        print("sending \(String(describing: textField.text))")
 //        let data = self.textField.text.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)
-        let data = NSKeyedArchiver.archivedDataWithRootObject(textField.text)
-        mcSession.sendData(data, toPeers: mcSession.connectedPeers, withMode: MCSessionSendDataMode.Reliable, error: nil)
+        do {
+        let data = NSKeyedArchiver.archivedData(withRootObject: textField.text!)
+        try mcSession.send(data, toPeers: mcSession.connectedPeers, with: .reliable)
+        } catch {
+            print("sending \(String(describing: textField.text)) Failed with \(error.localizedDescription)")
+        }
     }
 }
 
 extension ViewController : UITableViewDataSource {
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return msgs.count
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "cell")
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = UITableViewCell(style: UITableViewCellStyle.default, reuseIdentifier: "cell")
         cell.textLabel?.text = msgs[indexPath.row]
         return cell
     }
 }
 
 extension ViewController : MCSessionDelegate{
-    func session(session: MCSession!, peer peerID: MCPeerID!, didChangeState state: MCSessionState) {
+    func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
 //      called when connection created
         NSLog("peer: \(peerID.displayName). state: \(state.rawValue)")
     }
     
-    func session(session: MCSession!, didReceiveData data: NSData!, fromPeer peerID: MCPeerID!) {
+    func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
         // called data received from pper
         NSLog("data received from \(peerID.displayName)")
 
-        dispatch_async(dispatch_get_main_queue()) {
-            if let msg = NSKeyedUnarchiver.unarchiveObjectWithData(data!) {
+        DispatchQueue.main.async {
+            if let msg = NSKeyedUnarchiver.unarchiveObject(with: data) {
                 self.msgs.append("\(msg)")
             } else {
                 self.msgs.append("corrupted")
@@ -104,21 +108,21 @@ extension ViewController : MCSessionDelegate{
         }
     }
     
-    func session(session: MCSession!, didReceiveStream stream: NSInputStream!, withName streamName: String!, fromPeer peerID: MCPeerID!) {
+    func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
         // called when byte stream
         NSLog("1")
     }
     
-    func session(session: MCSession!, didStartReceivingResourceWithName resourceName: String!, fromPeer peerID: MCPeerID!, withProgress progress: NSProgress!) {
+    func session(_ session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, with progress: Progress) {
         // called when received resource from peer
         NSLog("2")
     }
     
-    func session(session: MCSession!, didFinishReceivingResourceWithName resourceName: String!, fromPeer peerID: MCPeerID!, atURL localURL: NSURL!, withError error: NSError!) {
+    func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL?, withError error: Error?) {
         // called when finished receiving data from peer
         NSLog("3")
     }
-    func session(session: MCSession!, didReceiveCertificate certificate: [AnyObject]!, fromPeer peerID: MCPeerID!, certificateHandler: ((Bool) -> Void)!) {
+    private func session(_ session: MCSession, didReceiveCertificate certificate: [AnyObject], fromPeer peerID: MCPeerID, certificateHandler: ((Bool) -> Void)) {
         //this method should inspect the cerificate, and approve/disapprove connection
         NSLog("certificate from \(peerID.displayName)")
         certificateHandler(true)
@@ -126,18 +130,18 @@ extension ViewController : MCSessionDelegate{
 }
 
 extension ViewController: MCBrowserViewControllerDelegate {
-    func browserViewControllerDidFinish(browserViewController: MCBrowserViewController!) {
+    func browserViewControllerDidFinish(_ browserViewController: MCBrowserViewController) {
         // called when selected peer to connect
         finishSearching(browserViewController)
     }
     
-    func browserViewControllerWasCancelled(browserViewController: MCBrowserViewController!) {
+    func browserViewControllerWasCancelled(_ browserViewController: MCBrowserViewController) {
         // called when 'cancel' was clicked in peer selection screen
         finishSearching(browserViewController)
     }
     
-    func finishSearching(browser :MCBrowserViewController!){
+    func finishSearching(_ browser :MCBrowserViewController!){
         mcAdvertiser.stop()
-        browser.dismissViewControllerAnimated(true, completion: nil)
+        browser.dismiss(animated: true, completion: nil)
     }
 }

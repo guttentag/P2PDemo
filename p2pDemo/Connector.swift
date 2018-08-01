@@ -16,9 +16,9 @@ class Connector: UIViewController {
     var mcBrowser :MCNearbyServiceBrowser!
     
     func setUpConnection(){
-        self.mcPeerId = MCPeerID(displayName: UIDevice.currentDevice().name)
+        self.mcPeerId = MCPeerID(displayName: UIDevice.current.name)
         
-        mcSession = MCSession(peer: mcPeerId, securityIdentity: nil, encryptionPreference: MCEncryptionPreference.None)
+        mcSession = MCSession(peer: mcPeerId, securityIdentity: nil, encryptionPreference: MCEncryptionPreference.none)
         mcSession.delegate = self
         
         mcBrowser = MCNearbyServiceBrowser(peer: mcPeerId, serviceType: "chatDemoApp")
@@ -36,73 +36,73 @@ class Connector: UIViewController {
     
     func connectPeer(p: MCPeerID){
         NSLog("trying to connect \(p.displayName)")
-        mcBrowser.invitePeer(p, toSession: mcSession, withContext: nil, timeout: NSTimeInterval(2000))
+        mcBrowser.invitePeer(p, to: mcSession, withContext: nil, timeout: TimeInterval(2000))
     }
 
     override func finalize() {
-        super.finalize()
         mcBrowser.stopBrowsingForPeers()
         mcAdvertiser.stopAdvertisingPeer()
     }
 }
 
 extension Connector : MCNearbyServiceBrowserDelegate {
-    func browser(browser: MCNearbyServiceBrowser!, didNotStartBrowsingForPeers error: NSError!) {
+    func browser(_ browser: MCNearbyServiceBrowser, didNotStartBrowsingForPeers error: Error) {
         NSLog("browser failed \(error.localizedDescription)")
     }
     
-    func browser(browser: MCNearbyServiceBrowser!, foundPeer peerID: MCPeerID!, withDiscoveryInfo info: [NSObject : AnyObject]!) {
+    func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {
         NSLog("found \(peerID.displayName)")
 //        connectPeer(peerID)
     }
     
-    func browser(browser: MCNearbyServiceBrowser!, lostPeer peerID: MCPeerID!) {
+    func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
         NSLog("lost \(peerID.displayName)")
     }
+    
 }
 
 extension Connector : MCNearbyServiceAdvertiserDelegate {
-    func advertiser(advertiser: MCNearbyServiceAdvertiser!, didReceiveInvitationFromPeer peerID: MCPeerID!, withContext context: NSData!, invitationHandler: ((Bool, MCSession!) -> Void)!) {
+    func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didReceiveInvitationFromPeer peerID: MCPeerID, withContext context: Data?, invitationHandler: @escaping ((Bool, MCSession?) -> Void)) {
         NSLog("accepted invitation from \(peerID.displayName)")
         invitationHandler(true, mcSession)
     }
     
-    func advertiser(advertiser: MCNearbyServiceAdvertiser!, didNotStartAdvertisingPeer error: NSError!) {
+    func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didNotStartAdvertisingPeer error: Error) {
         NSLog("advertiser failed: \(error.localizedDescription)")
     }
 }
 
 extension Connector : MCSessionDelegate{
-    func session(session: MCSession!, peer peerID: MCPeerID!, didChangeState state: MCSessionState) {
+    func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
         //      called when connection created
         NSLog("peer: \(peerID.description). state: \(state.rawValue)")
     }
     
-    func session(session: MCSession!, didReceiveData data: NSData!, fromPeer peerID: MCPeerID!) {
+    func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
         // called data received from peer
         
-        dispatch_async(dispatch_get_main_queue()) {
-            if let msg: AnyObject? = NSKeyedUnarchiver.unarchiveObjectWithData(data) {
+        DispatchQueue.main.async {
+            if let msg = NSKeyedUnarchiver.unarchiveObject(with: data as Data) as AnyObject? {
                 NSLog("\(peerID.displayName) sent data = \(msg)")
             } else {NSLog("recieved nil data from \(peerID.displayName)")}
         }
     }
     
-    func session(session: MCSession!, didReceiveStream stream: NSInputStream!, withName streamName: String!, fromPeer peerID: MCPeerID!) {
+    func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
         // called when byte stream
         NSLog("session recieved stream from \(peerID.displayName)")
     }
     
-    func session(session: MCSession!, didStartReceivingResourceWithName resourceName: String!, fromPeer peerID: MCPeerID!, withProgress progress: NSProgress!) {
+    func session(_ session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, with progress: Progress) {
         // called when received resource from peer
         NSLog("recieving resource from \(peerID.displayName)")
     }
     
-    func session(session: MCSession!, didFinishReceivingResourceWithName resourceName: String!, fromPeer peerID: MCPeerID!, atURL localURL: NSURL!, withError error: NSError!) {
+    func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL?, withError error: Error?) {
         // called when finished receiving data from peer
         NSLog("resource done")
     }
-    func session(session: MCSession!, didReceiveCertificate certificate: [AnyObject]!, fromPeer peerID: MCPeerID!, certificateHandler: ((Bool) -> Void)!) {
+    private func session(session: MCSession!, didReceiveCertificate certificate: [AnyObject]!, fromPeer peerID: MCPeerID!, certificateHandler: ((Bool) -> Void)!) {
         //this method should inspect the cerificate, and approve/disapprove connection
         NSLog("recieve certificate from \(peerID.displayName)")
         certificateHandler(true)
