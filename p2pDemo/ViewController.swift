@@ -53,18 +53,19 @@ class ViewController: UIViewController {
         
         mcAdvertiser = MCAdvertiserAssistant(serviceType: "chatDemoApp", discoveryInfo: nil, session: mcSession)
     }
-    @IBAction func searchForPeers(sender: AnyObject) {
+    
+    @IBAction func searchForPeers(_ sender: AnyObject) {
         mcAdvertiser.start()
         present(mcBrowser, animated: true, completion: nil)
     }
     
-    @IBAction func showPeers(sender: AnyObject) {
+    @IBAction func showPeers(_ sender: AnyObject) {
         print("\(mcSession.connectedPeers.count)")
         for item in mcSession.connectedPeers{
             print("\(item.displayName)")
         }
     }
-    @IBAction func sendData(sender: AnyObject) {
+    @IBAction func sendData(_ sender: AnyObject) {
         print("sending \(String(describing: textField.text))")
 //        let data = self.textField.text.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)
         do {

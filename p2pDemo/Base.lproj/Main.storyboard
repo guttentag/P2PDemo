@@ -1,7 +1,12 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7702" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="vXZ-lx-hvc">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="vXZ-lx-hvc">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
         <!--Chat-->
@@ -13,11 +18,11 @@
                         <viewControllerLayoutGuide type="bottom" id="2fi-mo-0CV"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="kh9-bI-dsS">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <navigationBar contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YNn-dV-h5d">
-                                <rect key="frame" x="0.0" y="20" width="320" height="44"/>
+                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YNn-dV-h5d">
+                                <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                                 <textAttributes key="titleTextAttributes">
                                     <offsetWrapper key="textShadowOffset" horizontal="0.0" vertical="0.0"/>
                                 </textAttributes>
@@ -25,46 +30,60 @@
                                     <navigationItem title="Chat" id="bfi-3J-lpa">
                                         <barButtonItem key="leftBarButtonItem" systemItem="action" id="xsu-KG-FeV">
                                             <connections>
-                                                <action selector="showPeers:" destination="vXZ-lx-hvc" id="xin-MC-Aw4"/>
+                                                <action selector="showPeers:" destination="vXZ-lx-hvc" id="6f2-vo-YNa"/>
                                             </connections>
                                         </barButtonItem>
                                         <barButtonItem key="rightBarButtonItem" systemItem="search" id="8Wd-3k-vQ5">
                                             <connections>
-                                                <action selector="searchForPeers:" destination="vXZ-lx-hvc" id="CWv-kV-Oz6"/>
+                                                <action selector="searchForPeers:" destination="vXZ-lx-hvc" id="ooC-XG-qJr"/>
                                             </connections>
                                         </barButtonItem>
                                     </navigationItem>
                                 </items>
                             </navigationBar>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="Ce0-9K-G4Q">
-                                <rect key="frame" x="16" y="203" width="288" height="357"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="iYf-Kh-26W">
+                                <rect key="frame" x="20" y="79" width="335" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Qcf-rg-aqC">
+                                <rect key="frame" x="20" y="127" width="335" height="54"/>
+                                <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <fontDescription key="fontDescription" type="system" weight="heavy" pointSize="35"/>
+                                <state key="normal" title="Send">
+                                    <color key="titleColor" red="1" green="0.5" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="sendData:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="uvH-vk-wCj"/>
+                                </connections>
+                            </button>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="Ce0-9K-G4Q">
+                                <rect key="frame" x="0.0" y="196" width="375" height="471"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <connections>
                                     <outlet property="dataSource" destination="vXZ-lx-hvc" id="ViB-I0-Hf1"/>
                                 </connections>
                             </tableView>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="iYf-Kh-26W">
-                                <rect key="frame" x="16" y="89" width="288" height="30"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Qcf-rg-aqC">
-                                <rect key="frame" x="16" y="127" width="288" height="68"/>
-                                <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <fontDescription key="fontDescription" type="system" weight="heavy" pointSize="35"/>
-                                <state key="normal" title="Send">
-                                    <color key="titleColor" red="1" green="0.5" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="sendData:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="5ak-lZ-w2I"/>
-                                </connections>
-                            </button>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="iYf-Kh-26W" firstAttribute="top" secondItem="YNn-dV-h5d" secondAttribute="bottom" constant="15" id="1Jg-DI-Vzt"/>
+                            <constraint firstAttribute="trailing" secondItem="iYf-Kh-26W" secondAttribute="trailing" constant="20" id="4gr-Pn-gfr"/>
+                            <constraint firstItem="Ce0-9K-G4Q" firstAttribute="top" secondItem="Qcf-rg-aqC" secondAttribute="bottom" constant="15" id="71p-zJ-wdk"/>
+                            <constraint firstItem="Ce0-9K-G4Q" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="K2T-OR-Bge"/>
+                            <constraint firstItem="Qcf-rg-aqC" firstAttribute="top" secondItem="iYf-Kh-26W" secondAttribute="bottom" constant="18" id="RSc-3h-8Oa"/>
+                            <constraint firstAttribute="trailing" secondItem="Ce0-9K-G4Q" secondAttribute="trailing" id="SUa-8N-yU2"/>
+                            <constraint firstAttribute="trailing" secondItem="YNn-dV-h5d" secondAttribute="trailing" id="dux-ZW-6ib"/>
+                            <constraint firstItem="YNn-dV-h5d" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="hk3-Sm-O16"/>
+                            <constraint firstItem="iYf-Kh-26W" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" constant="20" id="j7H-jb-p6l"/>
+                            <constraint firstItem="YNn-dV-h5d" firstAttribute="top" secondItem="jyV-Pf-zRb" secondAttribute="bottom" id="nc3-M9-eST"/>
+                            <constraint firstItem="Qcf-rg-aqC" firstAttribute="trailing" secondItem="iYf-Kh-26W" secondAttribute="trailing" id="pyN-2c-elj"/>
+                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="Ce0-9K-G4Q" secondAttribute="bottom" id="uFf-hA-wt7"/>
+                            <constraint firstItem="Qcf-rg-aqC" firstAttribute="leading" secondItem="iYf-Kh-26W" secondAttribute="leading" id="y2V-vM-TnI"/>
+                        </constraints>
                     </view>
                     <nil key="simulatedTopBarMetrics"/>
-                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
                         <outlet property="table" destination="Ce0-9K-G4Q" id="L0P-ga-JxN"/>
                         <outlet property="textField" destination="iYf-Kh-26W" id="8Nt-Tz-bac"/>
